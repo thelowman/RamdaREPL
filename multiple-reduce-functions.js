@@ -31,3 +31,9 @@ const allThree = (acc, thing) => {
   return partC(partB(partA(acc, thing), thing), thing)
 }
 reduce(allThree, {}, data)
+
+// https://stackoverflow.com/questions/65014257/how-can-i-combine-multiple-reducers-in-ramda/65015271#65015271
+const recompose = (...fns) => (a, b) => 
+  fns.reduce ((v, fn) => fn (v, b), a)
+
+reduce (recompose (partA, partB, partC), {}, data)
