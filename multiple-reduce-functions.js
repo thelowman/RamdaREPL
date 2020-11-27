@@ -4,36 +4,21 @@ const data = [
   { name: 'barney', age: 29, hair: 'blonde' },
   { name: 'betty', age: 26, hair: 'black' }
 ]
+const partA = curry((acc, {name}) => ({
+  ...acc,
+  names: [...(acc.names) || [], name]
+}))
+const partB = curry((acc, {age}) => ({
+  ...acc,
+  ages: [...(acc.ages || []), age]
+}))
+const partC = curry((acc, {hair}) => ({
+  ...acc, 
+  hairColors: [...(acc.hairColors || []), hair]
+}))
 
-const partA = curry((acc, thing) => {
-  if (!acc.names) acc.names = [];
-  acc.names.push(thing.name);
-  return acc;
-})
-const partB = curry((acc, thing) => {
-  if (!acc.ages) acc.ages = [];
-  acc.ages.push(thing.age);
-  return acc;
-})
-const partC = curry((acc, thing) => {
-  if (!acc.hairColors) acc.hairColors = [];
-  acc.hairColors.push(thing.hair);
-  return acc;
-})
-
-// I want one iteration with all 3 functions
-
-// Iterates multiple times but works
-reduce(partC, reduce(partB, reduce(partA, {}, data), data), data)
-
-// Iterates once but isn't very nice
-const allThree = (acc, thing) => {
-  return partC(partB(partA(acc, thing), thing), thing)
-}
-reduce(allThree, {}, data)
-
-// https://stackoverflow.com/questions/65014257/how-can-i-combine-multiple-reducers-in-ramda/65015271#65015271
 const recompose = (...fns) => (a, b) => 
   fns.reduce ((v, fn) => fn (v, b), a)
 
 reduce (recompose (partA, partB, partC), {}, data)
+// https://stackoverflow.com/questions/65014257/how-can-i-combine-multiple-reducers-in-ramda
